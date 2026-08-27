@@ -2,7 +2,7 @@
     const cors = require("cors");
     const dotenv = require("dotenv");
 
-    dotenv.config({ path: "../.env" });
+    const sonarRoutes = require("./routes/sonarRoutes");
 
     const app = express();
 
@@ -16,8 +16,6 @@
     });
     });
 
-    const PORT = process.env.SONAR_ANALYSIS_PORT || 5001;
+    app.use("/api/sonar", sonarRoutes);
 
-    app.listen(PORT, () => {
-    console.log(`Sonar Analysis Service running on port ${PORT}`);
-    });
+    module.exports = app;
