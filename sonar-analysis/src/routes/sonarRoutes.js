@@ -86,4 +86,67 @@ router.get("/analysis", async (req, res) => {
   }
 });
 
+router.get("/dashboard", async (req, res) => {
+  try {
+    const [projectStatus, measures, issues] = await Promise.all([
+      getProjectStatus(),
+      getMeasures(),
+      getIssues(),
+    ]);
+
+    const technicalDebtHours =
+      measures.technicalDebt.sqaleIndex / 60;
+
+    res.json({
+      project: {
+        key: process.env.SONAR_PROJECT_KEY,
+      },
+
+      qualityGate: {
+        status: projectStatus.projectStatus.status,
+        compliant:
+          projectStatus.projectStatus.status === "OK",
+      },
+
+      summary: {
+        bugs: measures.codeQuality.bugs,
+        vulnerabilities: measures.codeQuality.vulnerabilities,
+        codeSmells: measures.codeQuality.codeSmells,
+        coverage: measures.codeQuality.coverage,
+      },
+
+      technicalDebt: {
+        minutes: measures.technicalDebt.sqaleIndex,
+        hours: Number(technicalDebtHours.toFixed(2)),
+        debtRatio: measures.technicalDebt.debtRatio,
+        rating: measures.technicalDebt.rating,
+      },
+
+      complexity: {
+        complexity: measures.codeQuality.complexity,
+        cognitiveComplexity:
+          measures.codeQuality.cognitiveComplexity,
+      },
+
+      duplication: {
+        percentage:
+          measures.codeQuality.duplicatedLinesDensity,
+      },
+
+      issues: {
+        total: issues.total,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "SonarQube dashboard error:",
+      error.message
+    );
+
+    res.status(500).json({
+      error: "Failed to retrieve dashboard data",
+    });
+  }
+});
+
 module.exports = router;
