@@ -42,7 +42,33 @@ async function getMeasures() {
     },
   });
 
-  return response.data;
+  const measures = response.data.component.measures;
+
+  const metrics = {};
+
+  measures.forEach((measure) => {
+    metrics[measure.metric] = Number(measure.value);
+  });
+
+  return {
+    codeQuality: {
+      bugs: metrics.bugs || 0,
+      vulnerabilities: metrics.vulnerabilities || 0,
+      codeSmells: metrics.code_smells || 0,
+      coverage: metrics.coverage || 0,
+      duplicatedLinesDensity:
+        metrics.duplicated_lines_density || 0,
+      complexity: metrics.complexity || 0,
+      cognitiveComplexity:
+        metrics.cognitive_complexity || 0,
+    },
+
+    technicalDebt: {
+      sqaleIndex: metrics.sqale_index || 0,
+      debtRatio: metrics.sqale_debt_ratio || 0,
+      rating: metrics.sqale_rating || 0,
+    },
+  };
 }
 
 module.exports = {

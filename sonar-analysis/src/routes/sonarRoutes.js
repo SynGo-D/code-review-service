@@ -50,4 +50,21 @@ router.get("/measures", async (req, res) => {
   }
 });
 
+router.get("/technical-debt", async (req, res) => {
+  try {
+    const data = await getMeasures();
+
+    res.json(data.technicalDebt);
+  } catch (error) {
+    console.error(
+      "SonarQube technical debt error:",
+      error.message
+    );
+
+    res.status(500).json({
+      error: "Failed to retrieve technical debt",
+    });
+  }
+});
+
 module.exports = router;
