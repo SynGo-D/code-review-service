@@ -5,6 +5,7 @@ const {
   getIssues,
   getMeasures,
   getTechnicalDebt,
+  getAnalysis,
 } = require("../services/sonarService");
 
 const router = express.Router();
@@ -64,6 +65,23 @@ router.get("/technical-debt", async (req, res) => {
 
     res.status(500).json({
       error: "Failed to retrieve technical debt",
+    });
+  }
+});
+
+router.get("/analysis", async (req, res) => {
+  try {
+    const data = await getAnalysis();
+
+    res.json(data);
+  } catch (error) {
+    console.error(
+      "SonarQube analysis error:",
+      error.message
+    );
+
+    res.status(500).json({
+      error: "Failed to retrieve SonarQube analysis",
     });
   }
 });

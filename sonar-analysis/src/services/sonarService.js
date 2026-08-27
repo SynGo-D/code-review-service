@@ -77,9 +77,40 @@ async function getTechnicalDebt() {
   return data.technicalDebt;
 }
 
+async function getAnalysis() {
+  const [status, issues, measures] = await Promise.all([
+    getProjectStatus(),
+    getIssues(),
+    getMeasures(),
+  ]);
+
+  return {
+    project: {
+      key: response.data.component.key,
+      name: response.data.component.name,
+    },
+
+    qualityGate: {
+      status: status.projectStatus.status,
+      compliant: status.projectStatus.status === "OK",
+    },
+
+    technicalDebt: measures.technicalDebt,
+
+    codeQuality: measures.codeQuality,
+
+    issues: {
+      total: issues.total,
+      effortTotal: issues.effortTotal,
+      items: issues.issues,
+    },
+  };
+}
+
 module.exports = {
   getProjectStatus,
   getIssues,
   getMeasures,
   getTechnicalDebt,
+  getAnalysis,
 };
