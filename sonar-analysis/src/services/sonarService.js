@@ -71,8 +71,15 @@ async function getMeasures() {
   };
 }
 
+async function getTechnicalDebt() {
+  const data = await getMeasures();
+
+  return data.technicalDebt;
+}
+
 module.exports = {
   getProjectStatus,
   getIssues,
   getMeasures,
+  getTechnicalDebt,
 };

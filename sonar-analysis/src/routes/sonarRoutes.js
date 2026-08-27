@@ -4,6 +4,7 @@ const {
   getProjectStatus,
   getIssues,
   getMeasures,
+  getTechnicalDebt,
 } = require("../services/sonarService");
 
 const router = express.Router();
@@ -52,9 +53,9 @@ router.get("/measures", async (req, res) => {
 
 router.get("/technical-debt", async (req, res) => {
   try {
-    const data = await getMeasures();
+    const data = await getTechnicalDebt();
 
-    res.json(data.technicalDebt);
+    res.json(data);
   } catch (error) {
     console.error(
       "SonarQube technical debt error:",
